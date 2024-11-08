@@ -13,8 +13,6 @@ import os
 
 logging.basicConfig(level=logging.INFO)
 
-print("Current Working Directory: ", os.getcwd())
-
 
 # consolidate the pipeline to lead data, clean it, transform specific columns, categorize and export
 def complete_pipeline(
@@ -82,7 +80,7 @@ def complete_pipeline(
 
     # export both processed and aggregated data
     try:
-        df.to_csv(processed_data, index=False)
+        df.to_csv(processed_path, index=False)
         aggregated_df.to_csv(aggregated_path, index=False)
         logging.info(
             f"Data exported successfully to {processed_path} and aggregated_{aggregated_path}"
@@ -97,8 +95,12 @@ def complete_pipeline(
 
 # usage
 
-filepath = "resources/raw/train.csv"
-export_directory = "resources/processed"
+filepath = (
+    "c:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/resources/raw/train.csv"
+)
+export_directory = (
+    "c:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/resources/processed"
+)
 filename = "processed_train.csv"
 processed_data, aggregated_data = complete_pipeline(
     filepath, export_directory, filename
