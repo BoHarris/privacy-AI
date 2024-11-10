@@ -15,7 +15,7 @@ def encode_data_type(dataframe: pd.DataFrame, column_name: str) -> pd.DataFrame:
 def normalize_feature(dataframe: pd.DataFrame, columns: list) -> pd.DataFrame:
     """Normalize a numerical column to the range [0,1]"""
     scaler = MinMaxScaler()
-    dataframe[columns] = scaler.fit_transform(dataframe[[columns]])
+    dataframe[columns] = scaler.fit_transform(dataframe[columns])
     return dataframe
 
 
@@ -32,14 +32,26 @@ def select_feature(
     return X_new, y, selected_columns
 
 
-def prepare_features(dataframe: pd.DataFrame) -> pd.DataFrame:
+def prepare_features(dataframe):
     """Perform encoding, normalization, and selection of key features"""
-    # Encode 'data_type' feature
-    dataframe = encode_data_type(dataframe, "data_type")
-    dataframe = normalize_feature(
-        dataframe, ["access_frequency", "retention_days", "sensitivity_score"]
-    )
-    X_new, y, selected_columns = select_feature(
-        dataframe, target_column="compliance_risk", k=3
-    )
-    return X_new, y, selected_columns
+    # Encode categorical column like "Sex"
+    if "Sex" in dataframe.columns:
+        dataframe["Sex"] = LabelEncoder().fit_transform(dataframe["Sex"])
+
+    # Encode 'data_type' if it exists in dataset
+    if "data_type" in dataframe.columns:
+        dataframe = encode_data_type(dataframe, "data_type")
+    else:
+        print("Warning: 'data_type' column not found in dataset")
+
+    # Normalize specific columns
+    dataframe = normalize_feature(dataframe, ["Fare", "Normalized_Age"])
+
+    # Select relevant columns for X and y
+    X = dataframe[["Pclass", "Sex", "SibSp", "Parch", "Fare", "Normalized_Age"]]
+    y = dataframe["Survived"]  # Assuming 'Survived' is the target column for this model
+
+    # Featire selection
+    selected_columns = X.columns = X.columns.tolist()
+
+    return X, y, selected_columns

@@ -6,9 +6,10 @@ from sklearn.metrics import (
     f1_score,
     confusion_matrix,
 )
+import seaborn as sns
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
-import seaborn as sns
+import os
 
 
 def evaluate_model(y_true, y_pred):
@@ -26,7 +27,12 @@ def evaluate_model(y_true, y_pred):
     return accuracy, precision, recall, f1
 
 
-def plot_confusion_matrix(y_true, y_pred):
+def plot_confusion_matrix(
+    y_true,
+    y_pred,
+    save=True,
+    path="C:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/ml/",
+):
     """Plot the confusion matrix"""
     cm = confusion_matrix(y_true, y_pred)
     sns.heatmap(
@@ -40,7 +46,14 @@ def plot_confusion_matrix(y_true, y_pred):
     plt.xlabel("Predicted")
     plt.ylabel("Actual")
     plt.title("Confusion Matrix")
-    plt.show()
+
+    # Check if `save` is true, then save the plot as an image
+    if save:
+        save_path = os.path.join(path, "confusion_matrix.png")
+        plt.savefig(save_path)  # save the plat as a png
+        print("Confusion matrix saved as a PNG at {save_path}")
+    else:
+        plt.show()
 
 
 def cross_validate_model(model, X, y, cv=5):
@@ -48,3 +61,12 @@ def cross_validate_model(model, X, y, cv=5):
     scores = cross_val_score(model, X, y, cv=cv, scoring="accuracy")
     print(f"Cross-Validation Accuracy (average of {cv} fold): {scores.mean(): .2f}")
     return scores
+
+
+# Dummy test values
+y_test = [0, 1, 0, 1, 1]  # replace with actual test result labels
+y_pred = [0, 1, 0, 0, 1]  # replace with model predictions
+
+# Calculate metrics and plot confusion matrix
+evaluate_model(y_test, y_pred)
+plot_confusion_matrix(y_test, y_pred)
