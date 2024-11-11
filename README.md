@@ -165,14 +165,17 @@ Response: { "prediction": 0 } where:
 
 0 = Non-Compliant
 1 = Compliant
-Evaluation Results 📈
-Metric	Score
-Accuracy	95%
-Precision	94%
-Recall	90%
-F1 Score	92%
-Confusion Matrix
-![image](https://github.com/user-attachments/assets/000c0dba-cdf9-4de9-8688-a0cde00a4841)
+### Evaluation Results 📈
+
+| Metric      | Score |
+|-------------|-------|
+| Accuracy    | 95%   |
+| Precision   | 94%   |
+| Recall      | 90%   |
+| F1 Score    | 92%   |
+
+### Confusion Matrix
+![Confusion Matrix](https://github.com/user-attachments/assets/000c0dba-cdf9-4de9-8688-acde00a48431)
 
 
 Dependencies
