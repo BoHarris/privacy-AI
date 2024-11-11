@@ -175,10 +175,11 @@ Response: { "prediction": 0 } where:
 | F1 Score    | 92%   |
 
 ### Confusion Matrix
-![Confusion Matrix](https://github.com/user-attachments/assets/000c0dba-cdf9-4de9-8688-acde00a48431)
+
+![image](https://github.com/user-attachments/assets/59d9b19e-fa48-481b-81ce-cedaebc5f020)
 
 
-Dependencies
+### Dependencies
 Make sure to install the necessary Python packages:
 Flash
 Pandas
