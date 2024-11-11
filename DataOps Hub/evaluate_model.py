@@ -49,7 +49,7 @@ def plot_confusion_matrix(
 
     # Check if `save` is true, then save the plot as an image
     if save:
-        save_path = os.path.join(path, "confusion_matrix.png")
+        save_path = os.path.join(path, "confusionmatrix.png")
         plt.savefig(save_path)  # save the plat as a png
         print("Confusion matrix saved as a PNG at {save_path}")
     else:
