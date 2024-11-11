@@ -6,9 +6,11 @@ from sklearn.metrics import accuracy_score
 import joblib
 import pandas as pd
 import numpy as np
+import sys
 import os
 
 # Load data
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 df = pd.read_csv("resources/processed/processed_train.csv")
 X, y, selected_columns = prepare_features(df)
 
