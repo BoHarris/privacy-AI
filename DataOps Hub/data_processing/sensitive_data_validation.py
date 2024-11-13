@@ -18,11 +18,11 @@ PII_Patterns = {
 }
 
 
-def check_sensitive_data(df: pd.DataFrame):
+def check_sensitive_data(dataframe: pd.DataFrame):
     """Check for PII-Sensitive data aross columns"""
     print("Running Sensitive Data Checks")
 
-    for col in df.columns:
+    for col in dataframe.columns:
         for pii_type, pattern in PII_Patterns.items():
             if re.search(pattern, col, re.IGNORECASE):
                 print(

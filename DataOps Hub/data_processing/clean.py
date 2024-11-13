@@ -1,19 +1,27 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
 
 def clean_data(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Clean the data handling missing values, removing duplicates and parsing dates"""
-    # Handle missing values in Age column
-    if "Age" in dataframe.columns:
-        median_age = dataframe["Age"].median()
-        dataframe["Age"] = dataframe["Age"].fillna(median_age)
-        # Ensure ages are within a reasonable range
-        dataframe["Age"] = dataframe["Age"].apply(
-            lambda x: x if 0 <= x <= 120 else None
-        )
-        dataframe.drop_duplicates(inplace=True)
-        return dataframe
+    """Clean the data by handling missing values, removing duplicates, and parsing data"""
+    if dataframe is None or dataframe.empty:
+        logging.error("Input Dataframe is None or empty in clean_data")
+        return None
+
+    # Log the initial shape of the DataFrame
+    logging.info(f"Initial DataFrame shape: {dataframe.shape}")
+
+    # Drop duplicates
+    dataframe.drop_duplicates(inplace=True)
+
+    # log the final shape after cleaning
+    logging.info(f"Final DataFrame shape after cleaning: {dataframe.shape}")
+
+    # Additional check to ensure dataframe is not empty after cleaning
+    if dataframe.empty:
+        logging.error("DataFrame is empty after cleaning")
+        return None
+
+    return dataframe

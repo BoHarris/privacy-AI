@@ -1,107 +1,72 @@
 from data_processing.load import load_data
 from data_processing.clean import clean_data
-from data_processing.transform import normalize_column, encode_column
-from data_processing.aggregate import aggregate_data
-from data_processing.categorize import categorize_age
-
-# from ml.features import prepare_features
-# from ml.labels import create_compliance_labels
-import pandas as pd
+from data_processing.sensitive_data_validation import check_sensitive_data
+from data_processing.export import export_data
 import logging
-
 import os
+import pandas as pd
 
 logging.basicConfig(level=logging.INFO)
 
 
-# consolidate the pipeline to lead data, clean it, transform specific columns, categorize and export
 def complete_pipeline(
     filepath: str,
     export_directory: str,
-    filename: str = "processed_train.csv",
+    filename: str = "processed_sensitive_data.csv",
     clean: bool = True,
-    transform: bool = True,
-    categorize: bool = True,
+    check_sensitivity: bool = True,
 ) -> pd.DataFrame:
     logging.info("Starting pipeline")
-    # load and clean
+
+    # Load data
     try:
         df = load_data(filepath)
+        if df is None or df.empty:
+            logging.error("Dataframe is None or empty after loading")
+            return None
     except Exception as e:
-        logging.error(f"Error Loading Data: {e}")
-        return None, None
+        logging.error(f"Error loading data: {e}")
+        return None
+    # Clean data
     if clean:
         try:
             df = clean_data(df)
+            if df is None or df.empty:
+                logging.error("Dataframe is None or empty after cleaning")
+                return None
             logging.info("Data cleaned successfully")
         except Exception as e:
             logging.error(f"Error cleaning data: {e}")
-    if transform:
-        # transform data
-        if "Age" in df.columns:
-            try:
-                df = normalize_column(df, "Age")
-                logging.info("Age column normalized successfully")
-            except Exception as e:
-                logging.error(f"Error normalizing Age column: {e}")
-                return None, None
-        else:
-            logging.warning("Column 'age' not found in dataframe")
-    if "Category" in df.columns:
-        try:
-            df = encode_column(df, "Category")
-            logging.info("Category column encoded successfully")
-        except Exception as e:
-            logging.error(f"Error encoding Category column: {e}")
-            return None, None
-        logging.warning("Column 'Category' not found in dataframe")
-    if categorize:
-        # Categorize age groups
-        try:
-            df = categorize_age(df)
-            logging.info("Age categorization completed successfully")
-        except Exception as e:
-            logging.error(f"Error categorizing Age: {e}")
-            return None, None
+            return None
 
-    # Aggregate data by category
-    try:
-        aggregated_df = aggregate_data(df)
-        logging.info("Data Aggregation completed successfully")
-    except Exception as e:
-        logging.info(f"Error aggregating data: {e}")
-        return None, None
+    # Sensitive Data Check
+    if check_sensitivity:
+        try:
+            check_sensitive_data(df)
+            logging.info("Sensitive data check completed")
+        except Exception as e:
+            logging.error(f"Errpr during sensitive data check: {e}")
 
     # Ensure the export directory exists
     os.makedirs(export_directory, exist_ok=True)
-    # construct paths for files
     processed_path = os.path.join(export_directory, filename)
-    aggregated_path = os.path.join(export_directory, "aggregated_" + filename)
+    logging.info(f"Processed file path: {processed_path}")
 
-    # export both processed and aggregated data
+    # Export the processed data
     try:
-        df.to_csv(processed_path, index=False)
-        aggregated_df.to_csv(aggregated_path, index=False)
-        logging.info(
-            f"Data exported successfully to {processed_path} and aggregated_{aggregated_path}"
-        )
+        export_data(df, processed_path)
+        logging.info(f"Data exported successfully to {processed_path}")
     except Exception as e:
-        logging.error(f"Error Exporting data: {e}")
-        return None, None
+        logging.error(f"Error Exporting Data: {e}")
+        return None
+    logging.info("Pipeline completed and export")
+    return df
 
-    logging.info("Pipeline completed and exported")
-    return df, aggregated_df
 
-
-# usage
-
-filepath = (
-    "c:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/resources/raw/train.csv"
-)
+# Useage
+filepath = "c:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/resources/raw/dataset_sensitive_info.csv"
 export_directory = (
     "c:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/resources/processed"
 )
-filename = "processed_train.csv"
-processed_data, aggregated_data = complete_pipeline(
-    filepath, export_directory, filename
-)
+filename = "processed_sensitive_data.csv"
+processed_data = complete_pipeline(filepath, export_directory, filename)
