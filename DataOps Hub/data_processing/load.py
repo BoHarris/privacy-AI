@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import logging
 
 logging.basicConfig(level=logging.INFO)

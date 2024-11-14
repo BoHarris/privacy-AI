@@ -28,13 +28,14 @@ def evaluate_model(y_true, y_pred):
 
 
 def plot_confusion_matrix(
-    y_true,
+    y_test,
     y_pred,
+    labels=[0, 1],
     save=True,
     path="C:/Users/Bokha/OneDrive/Desktop/privacy-AI/DataOps Hub/ml/",
 ):
     """Plot the confusion matrix"""
-    cm = confusion_matrix(y_true, y_pred)
+    cm = confusion_matrix(y_test, y_pred, labels=labels)
     sns.heatmap(
         cm,
         annot=True,
