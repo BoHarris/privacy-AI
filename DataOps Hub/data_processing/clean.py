@@ -3,6 +3,10 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+logging.info("Preprocessing column names: stripping, lowercasing, and replacing spaces with underscores.")
+def preprocess_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
+    dataframe.columns = dataframe.columns.str.strip().str.lower().str.replace(' ', '_')
+    return dataframe
 
 def clean_data(dataframe: pd.DataFrame) -> pd.DataFrame:
     """Clean the data by handling missing values, removing duplicates, and parsing data"""
